@@ -27,39 +27,25 @@ App = {
   },
 
 initContract1: function(){
-
-  $.getJSON('./Solidity/build/contracts/DataContractCreator.json', function(data){
-    console.log(data);
-    // Get the necessary contract artifact file and instantiate it with truffle-contract
-    var DataCreatorArtifact = data;
+  $.getJSON('./Solidity/build/contracts/DataContractCreator.json').then(DataCreatorArtifact => {
     App.contracts.DataContractCreator = TruffleContract(DataCreatorArtifact);
-    //set the provider for our contracts
     App.contracts.DataContractCreator.setProvider(App.web3Provider);
-        console.log(App.contracts.DataContractCreator);
-    //hier nieuwe functies aan chainen als we willen dat die worden geladen bij het begin
-    //van de pagina.
-  }),
-
-  $.getJSON('./Solidity/build/contracts/DataContract.json', function(data){
-    console.log(data);
-    var DataContractArtifact = data;
+    return $.getJSON('./Solidity/build/contracts/DataContract.json')
+  }).then(DataContractArtifact => {
     App.contracts.DataContract = TruffleContract(DataContractArtifact);
-    console.log(App.contracts.DataContract);
     App.contracts.DataContract.setProvider(App.web3Provider);
-      return App.getDeployedContractAdresses();
-  });
-  console.log(App.contracts.DataContract);
+    console.log(App.getDeployedContractAdresses())
+    console.log(App.contracts);
+  })
 },
 
 getDeployedContractAdresses: function(){
-  //vars hier
-  App.contracts.DataContractCreator.at('0xe08bd3d15b00490d4dbfed3fbe33c6a6c8ce5878').then(function(instance){
-    DataContractCreatorInstance = instance;
-    DataContractCreatorInstance.getDeployedContracts.call().then((r) => {
-   $('#amountOfContracts').text(r.length);
-   console.log("requested amount of deployed contracts");
- });
-});
+  App.contracts.DataContractCreator.deployed().then(instance => {
+    return instance.getDeployedContracts.call()
+  }).then(deployedContracts => {
+    console.log("requested amount of deployed contracts:", deployedContracts.length)
+    $('#amountOfContracts').text(deployedContracts.length);
+  })
 },
 
 createNewContract : function(){
@@ -72,7 +58,7 @@ createNewContract : function(){
    var gas = 1000000;
    var account = accounts[0];
    //adress verandere hier bij nieuwe ganacha load 0x6fea428ed5b5b4804572a0df7766b71f68a44da8
-    App.contracts.DataContractCreator.at('0xe08bd3d15b00490d4dbfed3fbe33c6a6c8ce5878').then(function(instance){
+    App.contracts.DataContractCreator.deployed().then(function(instance){
     DataContractCreatorInstance = instance;
     console.log(web3.eth.getBalance(account)); //check balance?
     DataContractCreatorInstance.createDataContract(1500, {from: account, gas}).then((r) =>
@@ -90,7 +76,7 @@ requestPrice: function(){
   //tot ik zelf accs kan aanmaken.
   // console.log("datacontract isDeployed = ");
   // console.log(App.contracts.DataContractCreator.isDeployed());
-  App.contracts.DataContract.at('0xa1ace1bbc2c437ffd60da9b3f7e25d16dfaebc86').then(function(instance){
+  App.contracts.DataContract.deployed().then(function(instance){
   DataContractInstance = instance;
   console.log(DataContractInstance);
 //  DataContractinstance = DataContractI.at("0x8737a42306d1b59169a7fc54c286b596e5eafbcb");
@@ -105,7 +91,7 @@ requestPrice: function(){
 },
 requestAdresses: function(){
 
-  App.contracts.DataContractCreator.at('0xe08bd3d15b00490d4dbfed3fbe33c6a6c8ce5878').then(function(instance){
+  App.contracts.DataContractCreator.deployed().then(function(instance){
     DataContractCreatorInstance = instance;
     console.log(DataContractCreatorInstance);
 
