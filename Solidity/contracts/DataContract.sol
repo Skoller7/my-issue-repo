@@ -23,7 +23,7 @@ contract DataContract {
 
     //contract variables.
     address public dataSeller; //variable type address - all public variables have a getter ( automated)
-    uint public buyersCount;
+    uint public buyersCount = 0;
     uint public priceOfData;
     mapping(address => bool) public backers; //mapps ipv array -> veel goedkoper.
 
@@ -48,6 +48,15 @@ contract DataContract {
 
         backers[msg.sender] = true;
         buyersCount++;
+    }
+
+
+    function getPrice() public view returns(uint){
+      return priceOfData;
+    }
+
+    function getBuyersCount() public view returns(uint){
+      return buyersCount;
     }
 
 }

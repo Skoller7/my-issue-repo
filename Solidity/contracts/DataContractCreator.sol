@@ -1,7 +1,5 @@
 pragma solidity ^0.4.17;
-//to test this code go to : https://remix.ethereum.org/#optimize=false&version=soljson-v0.4.24+commit.e67f0147.js
-//past the code and go to "run", chose " enviroment : javascript VM".
-//
+
 
 contract DataContractCreator {
     address[]public deployedDataContracts; //alle gemaakte adressen opslaan.
@@ -21,8 +19,8 @@ contract DataContractCreator {
 contract DataContract {
 
     //contract variables.
-    address public dataSeller; //variable type address - all public variables have a getter ( automated)
-    uint public buyersCount;
+    address public dataSeller;
+    uint public buyersCount = 0;
     uint public priceOfData;
     mapping(address => bool) public backers; //mapps ipv array -> veel goedkoper.
 
@@ -47,6 +45,13 @@ contract DataContract {
 
         backers[msg.sender] = true;
         buyersCount++;
+    }
+    function getPrice() public view returns(uint){
+      return priceOfData;
+    }
+
+    function getBuyersCount() public view returns(uint){
+      return buyersCount;
     }
 
 }
